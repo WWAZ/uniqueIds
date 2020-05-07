@@ -6,7 +6,7 @@ const config = {
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'uniqueIds.js'
+    filename: 'uniqueIds.min.js'
   }
 };
 
