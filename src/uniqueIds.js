@@ -4,12 +4,12 @@
  |--------------------------------------------------------------------------
  |
  | Creates unique id strings
- | starting from 'aaa' ... 'aab' ... 'ZZZ' ... 'ZZZa' ... infinity
+ | starting from 'aab' ... 'aac' ... 'ZZZ' ... 'ZZZa' ... infinity
  |
  | Default character depot consists of all upper- and lowercase letters
- | as well as all numbers from 0-9 (= 62 chars). A default id length
- | of 3 characters provides 238.328 possible combinations.
- | (62) x (62) x (62) = 238.328
+ | (= 48 chars). A default id length of 3 characters provides
+ | 110.592 possible combinations.
+ | (48) x (48) x (48) = 110.592
  |
  | Environmental behavioral differences
  |--------------------------------------------------------------------------
@@ -17,17 +17,29 @@
  | a) Browser: for the length of a request lifecycle
  | b) Node: as long as the server is up (use reset() to start from 'aaa')
  |
+ |
+ | Public methods
+ |--------------------------------------------------------------------------
+ | make() - makes a new id
+ | setInitial(str) - sets inital id string value
+ | reset(str) - resets current id string (optional by given string)
+ |
  */
 
+
+/**
+ * Initial first id
+ * Needs to have a min length of 3
+ *
+ * @var string
+ */
+let inital = 'aaa'
+
+
+/**
+ * Unique Ids object
+ */
 const UniqueIds = {
-
-
-	/**
-	 * Initial first id
-	 *
-	 * @var string
-	 */
-	initial: 'aaa',
 
 
 	/**
@@ -36,8 +48,10 @@ const UniqueIds = {
 	 * @var string
 	 */
 	setInitial: function(str){
-		this.initial = str
-		this.last = str
+		if( str.length > 2 ){
+			inital = str
+			this.last = str
+		}
 	},
 
 
@@ -46,7 +60,7 @@ const UniqueIds = {
 	 *
 	 * @var string (this.init = default)
 	 */
-	last: this.initial,
+	last: inital,
 
 
 	/**
@@ -167,7 +181,7 @@ const UniqueIds = {
 	   * @private
 	  */
 		function getChars(){
-			return 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789'
+			return 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ'
 		}
 	},
 
@@ -180,9 +194,11 @@ const UniqueIds = {
 	 */
 	reset: function(str){
 		if( typeof str !== 'undefined' ){
-			this.setInitial(str)
+			if( str.length > 2 ){
+				this.setInitial(str)
+			}
 		}
-		this.last = this.initial
+		this.last = inital
 	}
 
 }
