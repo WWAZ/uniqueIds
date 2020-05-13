@@ -1,7 +1,9 @@
-const UniqueIds = require('./uniqueIds')
+const uniqueIds = require('./uniqueIds')
 
 if( typeof window !== 'undefined' ){
-  window['UniqueIds'] = UniqueIds
+  // We're in a brwoser
+  window['uniqueIds'] = uniqueIds
 } else {
-  module.exports = UniqueIds
+  // We're on a server
+  module.exports = uniqueIds
 }
