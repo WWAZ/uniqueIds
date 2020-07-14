@@ -37,6 +37,37 @@
 
 
 /**
+ * Minimal length of character depot
+ *
+ * @var {number}
+ */
+let minDepotLength = 3
+
+/**
+ * Error handler method.
+ * Default is throwing an error message.
+ * It may be overidden by setErrorHandler()
+ *
+ * @param {string} msg
+ * @private
+ */
+let _errorHandler = (msg) => {
+  throw TypeError(msg)
+}
+
+/**
+ * Resets error handler method
+ *
+ * @param {function} method
+ */
+const setErrorHandler = function(method){
+  if( typeof method === 'function' ){
+    _errorHandler = method
+  }
+}
+
+
+/**
 * Initial first id
 * Needs to have min length of 3.
 *
@@ -53,6 +84,7 @@ let inital = 'aaa'
 */
 let depotChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+
 /**
  * Sets initial first id.
  *
@@ -60,10 +92,11 @@ let depotChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
  * @return nothing
 */
 const setInitial = function(val){
-  if( val.length > 2 ){
-    inital = val
-    last = val
+  if( val.length < 3 ){
+    return _errorHandler('Initial value needs to have a length of at least 3 characters.')
   }
+  inital = val
+  last = val
 }
 
 
@@ -74,7 +107,49 @@ const setInitial = function(val){
  * @return nothing
 */
 const setDepot = function(val){
+
+
+  if( typeof val !== 'string' ){
+    return _errorHandler('Depot must be type of string.')
+  }
+
+  if(val.length < minDepotLength ){
+    return _errorHandler('Depot string needs to have a length of at least ' + minDepotLength + ' characters.')
+  }
+
+  if( countMultipleCharacters(val) > 0 ){
+    return _errorHandler('Depot may not contain any character twice.')
+  }
+
+  if( /\d/.test(val) ){
+    return _errorHandler('Depot may not contain numbers.')
+  }
+
+  // Release cache
+  depotReleaseCache()
+
   depotChars = val
+
+  // Set initial value (three times first char of depot)
+  let first = depotFirst()
+  setInitial(first + first + first)
+
+}
+
+
+/**
+ * Returns the number of characters
+ * that appear at least twice in a string.
+ *
+ * e.g. 'abbcdddef' -> 2 => found 'b' and 'd' more than once.
+ *
+ * @param {string} str
+ * @return {number}
+ * @private
+ */
+function countMultipleCharacters(str){
+   try{ return str.toLowerCase().split("").sort().join("").match(/(.)\1+/g).length; }
+   catch(e){ return 0; } // if TypeError
 }
 
 
@@ -103,7 +178,7 @@ function setLast(id){
       return true
     }
   }
-  throw Error('Last not set')
+  return _errorHandler('Id "' + id + '" is unvalid.')
 }
 
 
@@ -345,7 +420,7 @@ function charAtnTimesDepotLength(placeValue, number, carry){
  * @param {string} id
  * @return {boolean}
  */
-const valid  = function(id){
+const valid = function(id){
   return validate(id)
 }
 
@@ -372,10 +447,30 @@ function validate(id){
 }
 
 
+/**
+ * Depot cache values
+ *
+ * @private
+ */
 let _depot = false
 let _depotLength = false
 let _depotFirst = false
 let _depotSecond = false
+
+
+/**
+ * Releases depot cache
+ *
+ * @param none
+ * @return nothing
+ * @private
+ */
+function depotReleaseCache(){
+  _depot = false
+  _depotLength = false
+  _depotFirst = false
+  _depotSecond = false
+}
 
 
 /**
@@ -385,7 +480,7 @@ let _depotSecond = false
 * @return {string} depot chars
 * @private
 */
-function depot(){
+const depot = function(){
   return depotChars
 }
 
@@ -471,5 +566,7 @@ module.exports = {
   getLast,
   exists,
   toNumber,
-  valid
+  valid,
+  depot,
+  setErrorHandler
 }

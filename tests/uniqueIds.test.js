@@ -40,3 +40,50 @@ test('Resetting after setting inital should equal to inital value', () => {
   uniqueIds.reset()
   expect(uniqueIds.getLast()).toEqual('aZZ')
 })
+
+test('Resetting depot with valid characters should work', () => {
+  uniqueIds.setDepot(',.-#+?=)(/&%$§!')
+  // Next id would be ,,.
+  expect(uniqueIds.make()).toEqual(',,.')
+})
+
+test('Resetting depot with too less characters should throw error', () => {
+
+  let e = () => {
+    // Too short
+    uniqueIds.setDepot('aa')
+  };
+  expect(e).toThrow(TypeError)
+
+})
+
+test('Resetting depot with string containing at least one character twice should throw error', () => {
+
+  let e = () => {
+    // Char 'a' twice
+    uniqueIds.setDepot('aabcd')
+  };
+  expect(e).toThrow(TypeError)
+
+})
+
+test('Resetting depot with string containing numbers should throw error', () => {
+
+  let e = () => {
+    // Contains numbers
+    uniqueIds.setDepot('abcde2')
+  };
+  expect(e).toThrow(TypeError)
+
+})
+
+
+test('Resetting error handler should not throw Error, it should return a string', () => {
+
+  uniqueIds.setErrorHandler((msg) => {
+    return msg
+  })
+
+  expect(uniqueIds.setDepot('abcde2')).toEqual('Depot may not contain numbers.')
+
+})
