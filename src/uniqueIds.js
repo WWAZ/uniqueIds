@@ -43,6 +43,7 @@
  */
 let minDepotLength = 3
 
+
 /**
  * Error handler method.
  * Default is throwing an error message.
@@ -54,6 +55,7 @@ let minDepotLength = 3
 let _errorHandler = (msg) => {
   throw TypeError(msg)
 }
+
 
 /**
  * Resets error handler method
@@ -75,6 +77,7 @@ const setErrorHandler = function(method){
 * @private
 */
 let inital = 'aaa'
+
 
 /**
 * Initial depot charcaters.
@@ -107,7 +110,6 @@ const setInitial = function(val){
  * @return nothing
 */
 const setDepot = function(val){
-
 
   if( typeof val !== 'string' ){
     return _errorHandler('Depot must be type of string.')
