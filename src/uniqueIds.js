@@ -150,8 +150,12 @@ const setDepot = function(val){
  * @private
  */
 function countMultipleCharacters(str){
-   try{ return str.toLowerCase().split("").sort().join("").match(/(.)\1+/g).length; }
-   catch(e){ return 0; } // if TypeError
+   try{
+     return str.toLowerCase().split('').sort().join('').match(/(.)\1+/g).length
+   } catch( e ){
+     // TypeError
+     return 0
+   }
 }
 
 
