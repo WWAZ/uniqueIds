@@ -71,7 +71,7 @@ const setErrorHandler = function(method){
 
 /**
 * Initial first id
-* Needs to have min length of 3.
+* Needs to have min length of minDepotLength (default = 3).
 *
 * @var {string}
 * @private
@@ -95,7 +95,7 @@ let depotChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
  * @return nothing
 */
 const setInitial = function(val){
-  if( val.length < 3 ){
+  if( val.length < minDepotLength ){
     return _errorHandler('Initial value needs to have a length of at least 3 characters.')
   }
   inital = val
@@ -209,7 +209,7 @@ const make = function(){
   // in char depot, last letter
   // will be replaced.
   // 'abc' -> 'abd'
-  // When there's no next char
+  // When there's no next char,
   // the leftern char will be updated
   // and so on.
   // 'abz' -> 'aca'
@@ -218,10 +218,10 @@ const make = function(){
     next = getNext(l[n], n)
     if( next ){
       // We've found next.
-      // Update id
+      // Update id.
       l[n] = next
       updated = 1
-      // Set all following to first char
+      // Set all following to first char.
       // e.g. 'abz' -> 'aca'
       // e.g. 'azz' -> 'baa'
       let nn = n + 1;
@@ -236,16 +236,13 @@ const make = function(){
 
   if( !updated ){
     // No character was updated, no new id was found
-    // extend id length by 1, add first character
+    // extend id length by 1, add first character.
     // e.g. ZZZ -> baaa
     l = addPlaceValue(l)
   }
 
-  // Convert char arr back to string
+  // Convert char arr back to string.
   last = l.join('')
-
-  // Update counter
-  // cnt++
 
   // Return new id
   return last
@@ -314,7 +311,7 @@ function getNext(char, n){
 
 
 /**
- * Returns last generated id
+ * Returns last generated id.
  *
  * @param none
  * @return {string} id
@@ -436,7 +433,7 @@ const valid = function(id){
  */
 function validate(id){
   id = id.split('')
-  if( id.length < 3 ){
+  if( id.length < minDepotLength ){
     return false
   }
   let dp = depot()
@@ -450,7 +447,7 @@ function validate(id){
 
 
 /**
- * Depot cache values
+ * Depot cache values.
  *
  * @private
  */
@@ -461,7 +458,7 @@ let _depotSecond = false
 
 
 /**
- * Releases depot cache
+ * Releases depot cache.
  *
  * @param none
  * @return nothing
@@ -559,6 +556,7 @@ function depotSecond(){
   }
   return _depotSecond
 }
+
 
 module.exports = {
   setInitial,
