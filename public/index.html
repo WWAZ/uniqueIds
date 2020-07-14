@@ -40,8 +40,8 @@
 
     function create(){
       setTimeout(function(){
-        let id = uniqueIds.make();
-        var number = uniqueIds.toNumber(id);
+        let id = UniqueIds.make();
+        var number = UniqueIds.toNumber(id);
         document.querySelector('#id').innerHTML = '#' + id;
         document.querySelector('#number').innerHTML = number;
         create();
