@@ -11,6 +11,7 @@
  | 110.592 possible combinations.
  | (48) x (48) x (48) = 110.592
  |
+ |
  | Environmental behavioral differences
  |--------------------------------------------------------------------------
  | Unique ids will be created ...
@@ -18,68 +19,113 @@
  | b) Node: as long as the server is up (use reset() to start from 'aaa')
  |
  |
- | Public methods
- |--------------------------------------------------------------------------
- | make() - makes a new id
- | setInitial(str) - sets inital id string value
- | reset(str) - resets current id string (optional by given string)
- |
 */
+
+
+/**
+ * Creates global unique ids
+ *
+ * starting from 'aab' ... 'aac' ... 'ZZZ' ... 'ZZZa' ... infinity.
+ * - Browser) Every request lifecycle starts with 'aaa'.
+ * - Node) Runs as long the server is up. Use reset() to start from 'aaa'.
+ *
+ * @module uniqueId
+ */
+
+
+"use strict"
 
 
 /**
 * Initial first id
-* Needs to have a min length of 3
+* Needs to have min length of 3.
 *
-* @var string
+* @var {string}
+* @private
 */
 let inital = 'aaa'
 
+/**
+* Initial depot charcaters.
+*
+* @var {string}
+* @private
+*/
+let depotChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 /**
- * Sets initial first id
+ * Sets initial first id.
  *
- * @var string
+ * @param {string} val - initial id value
+ * @return nothing
 */
-exports.setInitial = function(str){
-  if( str.length > 2 ){
-    inital = str
-    last = str
+const setInitial = function(val){
+  if( val.length > 2 ){
+    inital = val
+    last = val
   }
 }
 
 
 /**
- * Stores Last provided id
+ * Sets depot chars.
  *
- * @var string (this.init = default)
+ * @param {string} val - depot chars
+ * @return nothing
+*/
+const setDepot = function(val){
+  depotChars = val
+}
+
+
+/**
+ * Stores last provided id.
+ * Default is initial.
+ *
+ * @var {string}
+ * @private
 */
 let last = inital
 
 
 /**
- * Counter for provided ids
+ * Sets last id.
  *
- * @var number
-*/
-let cnt = 0
+ * @param {string} id
+ * @return nothing
+ * @throws {Error} when no id is provided or id is unvalid
+ * @private
+ */
+function setLast(id){
+  if( typeof id !== 'undefined' ){
+    if( validate(id) ){
+      last = id
+      return true
+    }
+  }
+  throw Error('Last not set')
+}
 
 
 /**
- * Returns new unique id
+ * Returns new unique id.
  *
  * @param none
- * @return string id
+ * @return {string} unique id
+ *
+ * @example
+ * const uniqueId = require('uniqueId')
+ * let id = uniqueId.make() // --> 'aaa'
 */
-exports.make = function(){
+const make = function(){
 
   // Split last id into single chars
   let l = last.split('')
-  // n = length of last string
+  // n = index of last string
   let n = l.length - 1
 
   let updated = 0;
-  let cur, next
+  let next
 
   // Start with last char.
   // If there's a next character
@@ -104,7 +150,7 @@ exports.make = function(){
       let nn = n + 1;
       if( typeof l[nn] !== 'undefined' ){
         for(let i=nn; i < l.length; i++){
-          l[i] = getFirst()
+          l[i] = depotFirst()
         }
       }
     }
@@ -114,15 +160,15 @@ exports.make = function(){
   if( !updated ){
     // No character was updated, no new id was found
     // extend id length by 1, add first character
-    // e.g. ZZZ -> ZZZa
-    l.push(getFirst())
+    // e.g. ZZZ -> baaa
+    l = addPlaceValue(l)
   }
 
   // Convert char arr back to string
   last = l.join('')
 
   // Update counter
-  cnt++
+  // cnt++
 
   // Return new id
   return last
@@ -131,47 +177,52 @@ exports.make = function(){
 
 
 /**
- * Sets last id to it's inital value (default = 'aaa')
- * or to a given string
+ * Add place value to id
+ * e.g. ZZZ -> baaa.
  *
- * @param string str (optional)
+ * @param {array} id
+ * @return {array} id
+ * @private
+ */
+function addPlaceValue(arr){
+  for(let i=0; i<arr.length; i++){
+    // set all digits to first char of depot (regulary 'a')
+    arr[i] = depotFirst()
+  }
+  // Put second char of depot at the beginning (regulary 'b')
+  arr.unshift(depotSecond())
+  return arr
+}
+
+
+/**
+ * Sets last id to it's inital value (default = 'aaa')
+ * or to a given string.
+ *
+ * @param {string} id (optional)
  * @return nothing
 */
-exports.reset = function(str){
-  if( typeof str !== 'undefined' ){
-    if( str.length > 2 ){
-      this.setInitial(str)
-    }
+const reset = function(id){
+  if( typeof id !== 'undefined' ){
+    return setLast(id)
   }
   last = inital
+  return true
 }
 
 
 /**
- * Returns first character
- * of Chars
+ * Returns next char after given char.
  *
- * @param none
- * @return string first char
- * @private
-*/
-function getFirst(){
-  return getChars().substr(0,1);
-}
-
-
-/**
- * Returns next char after given char
- *
- * @param string char
- * @param number index if current char in id
+ * @param {string} char
+ * @param {number} n - index if current char in id
  * @return string next char
  * @private
 */
 function getNext(char, n){
-  let index = getChars().indexOf(char)
+  let index = depot().indexOf(char)
   let ip = index + 1
-  let next = getChars().split('')[ip]
+  let next = depotSplit()[ip]
   if(typeof next !== 'undefined' ){
     if( n === 0 && !isNaN(parseInt(next)) ){
       // We're dealing with the first position
@@ -186,13 +237,239 @@ function getNext(char, n){
 
 
 /**
-* String of characters
-* as depot for ids
+ * Returns last generated id
+ *
+ * @param none
+ * @return {string} id
+ */
+const getLast = function(){
+  return last
+}
+
+
+/**
+ * Returns true when given id exists.
+ *
+ * @param {string} id
+ * @return {boolean}
+ */
+const exists = function(id){
+  if( toNumber(id) <= toNumber(last) ){
+    return true
+  }
+  return false
+}
+
+
+/**
+ * Returns numeric representation of given id.
+ *
+ * @param {string} id
+ * @return {number} numeric representation
+ */
+const toNumber = function(id){
+  id = id.split('')
+  let dl = depotLength()
+  let placeValue = id.length - 1
+  let number = 0
+  for(let i=0; i<id.length; i++){
+    number+= depotCharIndex(id[i]) * Math.pow(dl, placeValue)
+    placeValue--
+  }
+  return Math.round(number)
+}
+
+/*
+@todo
+exports.toString = function(number){
+  number = number.split('')
+  let id = ''
+  let carry = 0
+  let dl = depotLength()
+  let placeValue = 0
+  let char
+  for(let i=number.length-1; i === 0; i--){
+
+    //number+= depotCharIndex(id[i]) * Math.pow(dl, placeValue)
+    {char, carry} = charAtnTimesDepotLength(placeValue, number[i], carry)
+    id+= char
+    placeValue++
+  }
+  return Math.round(number)
+}
+
+function fillZero(value, n){
+  value = String(value)
+  for(let i=0; i<n; i++){
+    value+='0'
+  }
+  return parseInt(value)
+}
+
+function charAtnTimesDepotLength(placeValue, number, carry){
+  let baseNumber = number
+  number = (number + carry) * fillZero(1, placeValue)
+  let maxDepotLength = Math.pow(depotLength(), placeValue)
+
+  // Drei Möglichkeiten
+  // a) number < lepotLength
+  // b) number < maxDepotLength
+  // c) number > maxDepotLength
+  if( number <=  depotLength() ){
+    // number < lepotLength
+    return depotCharIndex(number)
+  }
+  if( number <=  maxDepotLength ){
+    // number < maxDepotLength
+    return depotCharIndex(baseNumber)
+    // 2000 / 10 = 200 Durchläufe beginnend ab 2 -> b
+    // 2245 / 10 = 224.5 Durchläufe beginnend ab 2 -> b
+  }
+  // number > maxDepotLength
+
+  let pos = number *
+  if( pos <= depotLength() ){
+    return {
+      char: depotCharIndex(pos),
+      carry: 0
+    }
+  }
+
+}
+*/
+
+
+/**
+ * Returns true when given id is valid.
+ *
+ * @param {string} id
+ * @return {boolean}
+ */
+const valid  = function(id){
+  return validate(id)
+}
+
+
+/**
+ * Returns true when given id is valid.
+ * (Checks if given chars of id are part or depot chars).
+ *
+ * @param {string} id
+ * @return {boolean}
+ */
+function validate(id){
+  id = id.split('')
+  if( id.length < 3 ){
+    return false
+  }
+  let dp = depot()
+  for(let i=0; i<id.length; i++){
+    if( dp.indexOf(id[i]) === -1 ){
+      return false
+    }
+  }
+  return true
+}
+
+
+let _depot = false
+let _depotLength = false
+let _depotFirst = false
+let _depotSecond = false
+
+
+/**
+* Returns depot chars.
 *
 * @param none
-* @return {string} Chars
+* @return {string} depot chars
 * @private
 */
-function getChars(){
- return 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ'
+function depot(){
+  return depotChars
+}
+
+
+/**
+ * Returns splitted depot as array.
+ *
+ * @param none
+ * @return {array} depot
+ * @private
+ */
+function depotSplit(){
+  if( !_depot ){
+    _depot = depot().split('')
+  }
+  return _depot
+}
+
+
+/**
+ * Returns index of given char in depot.
+ *
+ * @param {string} char
+ * @return {number} index
+ * @private
+ */
+function depotCharIndex(char){
+  return depotSplit().indexOf(char)
+}
+
+
+/**
+ * Return depot length.
+ *
+ * @param none
+ * @return {number}
+ * @private
+ */
+function depotLength(){
+  if( !_depotLength ){
+    _depotLength = depotSplit().length
+  }
+  return _depotLength
+}
+
+
+/**
+ * Returns first character
+ * of depot chars.
+ *
+ * @param none
+ * @return {string} first depot char
+ * @private
+*/
+function depotFirst(){
+  if( !_depotFirst ){
+    _depotFirst = depot().substr(0,1);
+  }
+  return _depotFirst
+}
+
+
+/**
+ * Returns second character
+ * of depot chars.
+ *
+ * @param none
+ * @return {string} first depot char
+ * @private
+*/
+function depotSecond(){
+  if( !_depotSecond ){
+    _depotSecond = depot().substr(1,1);
+  }
+  return _depotSecond
+}
+
+module.exports = {
+  setInitial,
+  setDepot,
+  make,
+  reset,
+  getLast,
+  exists,
+  toNumber,
+  valid
 }

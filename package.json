@@ -1,18 +1,29 @@
 {
   "name": "uniqueIds",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
+  "description": "Generates and manages unique id strings.",
+  "main": "./index.js",
   "scripts": {
-    "test": "node test.js",
-    "build": "webpack --config webpack.config.js"
+    "test": "jest --watch --runInBand",
+    "eslint": "npx eslint index.js",
+    "dist": "./node_modules/.bin/babel ./src/index.browser.js --out-dir lib && webpack --config webpack.browser.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.3",
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "bufferutil": "^4.0.1",
+    "canvas": "^2.6.1",
+    "core-js": "^3.6.5",
+    "eslint": "^7.4.0",
+    "jest": "^26.1.0",
+    "nodemon": "^2.0.4",
+    "utf-8-validate": "^5.0.2",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   }
 }

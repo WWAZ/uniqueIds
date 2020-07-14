@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>uniqueIds</title>
+  <meta name="description" content="Generates and manages unique id strings.">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+  .table{
+    width: 100%;
+  }
+  .cell{
+    font-size: 10em;
+    text-align: center;
+  }
+  .cell.left{
+    color: #3b1986;
+  }
+  .cell.center{
+    font-size: 2.5em;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+  .cell.right{
+    color: #86287c;
+  }
+  </style>
+</head>
+<body>
+  <div class="table">
+    <div class="cell left text-monospace" id="id"></div>
+    <div class="cell center text-monospace">endless uniqueIds()</div>
+    <div class="cell right text-monospace" id="number"></div>
+  </div>
+  <script>
+
+    docReady(function() {
+      create();
+    });
+
+    function create(){
+      setTimeout(function(){
+        let id = uniqueIds.make();
+        var number = uniqueIds.toNumber(id);
+        document.querySelector('#id').innerHTML = '#' + id;
+        document.querySelector('#number').innerHTML = number;
+        create();
+      }, 1)
+    }
+
+    function docReady(fn) {
+      // see if DOM is already available
+      if (document.readyState === "complete" || document.readyState === "interactive") {
+        // call on next available tick
+        setTimeout(fn, 1);
+      } else {
+        document.addEventListener("DOMContentLoaded", fn);
+      }
+    }
+
+  </script>
+  <script src="uniqueIds.min.js"></script>
+</body>
+</html>

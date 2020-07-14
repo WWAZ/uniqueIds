@@ -1,0 +1,22 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "ie": "9",
+          "edge": "17",
+          "firefox": "10",
+          "chrome": "17",
+          "safari": "6",
+          "android": "67",
+          "ios": "12",
+          "node": "8.16",
+          "samsung": "9.2"
+        },
+        "useBuiltIns": "usage",
+        "corejs": "3"
+      }
+    ]
+  ]
+}
