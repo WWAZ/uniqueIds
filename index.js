@@ -8,7 +8,7 @@
 
 const uniqueIds = require('./src/uniqueIds')
 
-if( window ){
+if( typeof window !== 'undefined' ){
   window['UniqueIds'] = uniqueIds
 }
 
