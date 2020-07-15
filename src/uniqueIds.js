@@ -159,10 +159,7 @@ const setDepot = function(val){
   depotChars = val
 
   // Set initial value (three times first char of depot)
-  let first = depotFirst()
-  setInitial(first + first + first)
-
-  // setInitialNumber(0)
+  setInitial(depotFirst() + depotFirst() + depotFirst())
 
 }
 
@@ -203,56 +200,12 @@ const make = function(){
 
 
 /**
- * Add place value to id
- * e.g. ZZZ -> baaa.
- *
- * @param {array} id
- * @return {array} id
- * @private
- */
-function addPlaceValue(arr){
-  for(let i in arr){
-    // set all digits to first char of depot (regulary 'a')
-    arr[i] = depotFirst()
-  }
-  // Put second char of depot at the beginning (regulary 'b')
-  arr.unshift(depotSecond())
-  return arr
-}
-
-
-/**
  * Sets last id to it's inital value (default = 'aaa')
  *
  * @return nothing
 */
 const reset = function(){
   lastNumber = initalNumber
-}
-
-
-/**
- * Returns next char after given char.
- *
- * @param {string} char
- * @param {number} n - index if current char in id
- * @return string next char
- * @private
-*/
-function getNext(char, n){
-  let index = depot().indexOf(char)
-  let ip = index + 1
-  let next = depotSplit()[ip]
-  if(typeof next !== 'undefined' ){
-    if( n === 0 && !isNaN(parseInt(next)) ){
-      // We're dealing with the first position
-      // of id. There are no numbers allowed
-      // Return false
-      return false
-    }
-    return next
-  }
-  return false
 }
 
 
@@ -326,15 +279,10 @@ const toString = function(number){
   let id = ''
 
   for(let placeValue = getMaxPlaceValue(number); placeValue >= 0; placeValue--){
-
     charIndex = Math.floor(dpl / (Math.pow(dpl, placeValue + 1) / carryover) )
-
     id+= depotIndex(charIndex)
-
     sumCharsTotal+= charIndex * Math.pow(dpl, placeValue)
-
     carryover = number - sumCharsTotal
-
   }
 
   return id
