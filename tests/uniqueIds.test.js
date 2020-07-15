@@ -35,7 +35,7 @@ test('toNumber("abc") should be equal to number 54', () => {
   expect(uniqueIds.toNumber('abc')).toEqual(54)
 })
 
-test('toNumber(123) should throw error', () => {
+test('Error: toNumber(123) should throw error', () => {
   let e = () => {
     // No string privided
     uniqueIds.toNumber(123)
@@ -47,19 +47,32 @@ test('toString(0) should be equal to id "aaa"', () => {
   expect(uniqueIds.toString(0)).toEqual('aaa')
 })
 
-test('toString(97624343827398128999) should be equal to id ",!$!.//$§)=+,(/,,,"', () => {
+test('Last number 3rd place: toString(140607) should be equal to id "ZZZ"', () => {
+  expect(uniqueIds.toString(140607)).toEqual('ZZZ')
+})
+
+test('First number 4th place: toString(140608) should be equal to id "baaa"', () => {
+  expect(uniqueIds.toString(140608)).toEqual('baaa')
+})
+
+test('Long number: toString(97624343827398128999) should be equal to id "mZrSJJynUKaa"', () => {
+  expect(uniqueIds.toString(97624343827398128999)).toEqual('mZrSJJynUKaa')
+  expect(uniqueIds.toNumber('mZrSJJynUKaa')).toEqual(97624343827398128999)
+})
+
+test('setDepot(",.-#+?=)(/&%$§!"): toString(97624343827398128999) should be equal to id ",!$!.//$§)=+,(/,,,"', () => {
   // Save depot
-  let depot = uniqueIds.depot()
+  let _depot = uniqueIds.depot()
   // Set new depot
   uniqueIds.setDepot(',.-#+?=)(/&%$§!')
   // Make tests
-  expect(uniqueIds.toString(97624343827398128999)).toEqual(',!$!.//$§)=+,(/,,,')
-  expect(uniqueIds.toNumber(',!$!.//$§)=+,(/,,,')).toEqual(97624343827398128999)
+  expect(uniqueIds.toString(97624343827398128999)).toEqual('!$!.//$§)=+,(/,,,')
+  expect(uniqueIds.toNumber('!$!.//$§)=+,(/,,,')).toEqual(97624343827398128999)
   // Restore depot for further testings
-  uniqueIds.setDepot(depot)
+  uniqueIds.setDepot(_depot)
 })
 
-test('toString("a") should throw error', () => {
+test('Error: toString("a") should throw error', () => {
   let e = () => {
     // No number privided
     uniqueIds.toString('a')
@@ -67,7 +80,7 @@ test('toString("a") should throw error', () => {
   expect(e).toThrow(TypeError)
 })
 
-test('toString(-2) should throw error', () => {
+test('Error: toString(-2) should throw error', () => {
   let e = () => {
     // Negative number provided
     uniqueIds.toString(-2)
@@ -77,10 +90,13 @@ test('toString(-2) should throw error', () => {
 
 test('Create 5000 ids in a for loop - toNumber(id) should equal i', () => {
   let id
+  let number
   uniqueIds.reset()
   for(let i=0; i < 5000; i++){
     id = uniqueIds.make()
-    expect(uniqueIds.toNumber(id)).toEqual(i)
+    number = uniqueIds.toNumber(id)
+    expect(number).toEqual(i)
+    expect(uniqueIds.toString(number)).toEqual(id)
   }
 })
 
@@ -120,7 +136,7 @@ test('Resetting depot with valid special characters ",.-#+?=)(/&%$§!" should wo
   expect(uniqueIds.valid(",.#")).toEqual(true)
 })
 
-test('Resetting depot with too less characters should throw error', () => {
+test('Error: Resetting depot with too less characters should throw error', () => {
 
   let e = () => {
     // Too short
@@ -130,7 +146,7 @@ test('Resetting depot with too less characters should throw error', () => {
 
 })
 
-test('Resetting depot with string containing at least one character twice should throw error', () => {
+test('Error: Resetting depot with string containing at least one character twice should throw error', () => {
 
   let e = () => {
     // Char 'a' twice
@@ -140,7 +156,7 @@ test('Resetting depot with string containing at least one character twice should
 
 })
 
-test('Resetting depot with string containing numbers should throw error', () => {
+test('Error: Resetting depot with string containing numbers should throw error', () => {
 
   let e = () => {
     // Contains numbers
@@ -151,7 +167,7 @@ test('Resetting depot with string containing numbers should throw error', () => 
 })
 
 
-test('Resetting error handler should not throw Error, it should return a string', () => {
+test('Error: Resetting error handler should not throw Error, it should return a string', () => {
 
   uniqueIds.setErrorHandler((msg) => {
     return msg

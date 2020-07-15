@@ -4,7 +4,7 @@
   "description": "Generates and manages unique id strings.",
   "main": "./index.js",
   "scripts": {
-    "test": "jest --watch --runInBand",
+    "test": "jest tests/uniqueIds.test.js --watch --runInBand",
     "eslint": "npx eslint index.js",
     "dist": "./node_modules/.bin/babel ./index.js --out-dir lib && webpack --config webpack.config.js"
   },
