@@ -35,12 +35,44 @@ test('toNumber("abc") should be equal to number 54', () => {
   expect(uniqueIds.toNumber('abc')).toEqual(54)
 })
 
+test('toNumber(123) should throw error', () => {
+  let e = () => {
+    // No string privided
+    uniqueIds.toNumber(123)
+  };
+  expect(e).toThrow(TypeError)
+})
+
 test('toString(0) should be equal to id "aaa"', () => {
   expect(uniqueIds.toString(0)).toEqual('aaa')
 })
 
-test('toString(2762434382739812) should be equal to id "aZJapccEtO"', () => {
-  expect(uniqueIds.toString(2762434382739812)).toEqual('aZJapccEtO')
+test('toString(97624343827398128999) should be equal to id ",!$!.//$§)=+,(/,,,"', () => {
+  // Save depot
+  let depot = uniqueIds.depot()
+  // Set new depot
+  uniqueIds.setDepot(',.-#+?=)(/&%$§!')
+  // Make tests
+  expect(uniqueIds.toString(97624343827398128999)).toEqual(',!$!.//$§)=+,(/,,,')
+  expect(uniqueIds.toNumber(',!$!.//$§)=+,(/,,,')).toEqual(97624343827398128999)
+  // Restore depot for further testings
+  uniqueIds.setDepot(depot)
+})
+
+test('toString("a") should throw error', () => {
+  let e = () => {
+    // No number privided
+    uniqueIds.toString('a')
+  };
+  expect(e).toThrow(TypeError)
+})
+
+test('toString(-2) should throw error', () => {
+  let e = () => {
+    // Negative number provided
+    uniqueIds.toString(-2)
+  };
+  expect(e).toThrow(TypeError)
 })
 
 test('Create 5000 ids in a for loop - toNumber(id) should equal i', () => {

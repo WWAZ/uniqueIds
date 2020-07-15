@@ -61,6 +61,7 @@ let _errorHandler = (msg) => {
  * Resets error handler method.
  *
  * @param {function} method
+ * @return nothing
  */
 const setErrorHandler = function(method){
   if( typeof method === 'function' ){
@@ -176,7 +177,7 @@ const setDepot = function(val){
  */
 function countMultipleCharacters(str){
    try{
-     return str.toLowerCase().split('').sort().join('').match(/(.)\1+/g).length
+     return str.split('').sort().join('').match(/(.)\1+/g).length
    } catch( e ){
      // TypeError
      return 0
@@ -202,6 +203,7 @@ const make = function(){
 /**
  * Sets last id to it's inital value (default = 'aaa')
  *
+ * @param none
  * @return nothing
 */
 const reset = function(){
@@ -244,6 +246,9 @@ const exists = function(id){
  * @return {number} numeric representation
  */
 const toNumber = function(id){
+  if( typeof id !== 'string' ){
+    return _errorHandler('Value must be string')
+  }
   id = id.split('')
   let dl = depotLength()
   let placeValue = id.length - 1
@@ -263,6 +268,14 @@ const toNumber = function(id){
  * @return {string} id
  */
 const toString = function(number){
+
+  if( typeof number !== 'number' ){
+    return _errorHandler('Value must be number')
+  }
+
+  if( number < 0 ){
+    return _errorHandler('Number must be > 0')
+  }
 
   let dpl = depotLength()
 
@@ -318,7 +331,6 @@ const valid = function(id){
 
 /**
  * Returns true when given id is valid.
- * (Checks if given chars of id are part or depot chars).
  *
  * @param {string} id
  * @return {boolean}
@@ -365,11 +377,10 @@ function depotReleaseCache(){
 
 
 /**
-* Returns depot chars.
+* Returns depot string.
 *
 * @param none
-* @return {string} depot chars
-* @private
+* @return {string} depot string
 */
 const depot = function(){
   return depotChars
@@ -398,12 +409,19 @@ function depotSplit(){
  * @return {number} index
  * @private
  */
-const depotCharIndex = function(char){
+function depotCharIndex(char){
   return depotSplit().indexOf(char)
 }
 
 
-const depotIndex = function(index){
+/**
+ * Returns char at given index in depot.
+ *
+ * @param {number} index
+ * @return {string} char
+ * @private
+ */
+function depotIndex(index){
   return depotSplit()[index]
 }
 
@@ -457,7 +475,6 @@ function depotSecond(){
 
 module.exports = {
   setInitial,
-  setDepot,
   make,
   reset,
   lastId,
@@ -466,7 +483,6 @@ module.exports = {
   toString,
   valid,
   depot,
-  setErrorHandler,
-  depotCharIndex,
-  depotIndex
+  setDepot,
+  setErrorHandler
 }
