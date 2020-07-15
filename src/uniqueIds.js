@@ -1,32 +1,20 @@
-/*
- |--------------------------------------------------------------------------
- | Unique Ids
- |--------------------------------------------------------------------------
- |
- | Creates unique id strings
- | starting from 'aaa' ... 'aab' ... 'ZZZ' ... 'baaa' ... infinity
- |
- | Default character depot consists of all upper- and lowercase letters
- | (= 52 chars). A default id length of 3 characters provides
- | (52) x (52) x (52) = 140.608 combinations.
- |
- |
- | Environmental behavioral differences
- |--------------------------------------------------------------------------
- | Unique ids will be created ...
- | a) Browser: duration of a request lifecycle
- | b) Node: as long as the server is up (use reset() to start from 'aaa')
- |
- |
-*/
-
-
 /**
- * Creates global unique ids
+ * Creates endless unique ids
+ * --------------------------------------------------------------------------
  *
- * starting from 'aab' ... 'aac' ... 'ZZZ' ... 'ZZZa' ... infinity.
+ * Starting from 'aab' ... 'aac' ... 'ZZZ' ... 'baaa' ... to infinity.
+ *
+ * Default character depot consists of all upper- and lowercase letters
+ * (= 52 chars). A default id length of 3 characters provides
+ * (52) x (52) x (52) = 140.608 combinations.
+ *
+ * Environmental behavioral differences
+ * --------------------------------------------------------------------------
  * - Browser) Every request lifecycle starts with 'aaa'.
  * - Node) Runs as long the server is up. Use reset() to start from 'aaa'.
+ *
+ * @author   WWAZ <https://github.com/WWAZ>
+ * @license  NoLicense
  *
  * @module uniqueId
  */
