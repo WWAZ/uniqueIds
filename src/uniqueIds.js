@@ -27,6 +27,7 @@
  * Minimal length of character depot.
  *
  * @var {number}
+ * @private
  */
 let minDepotLength = 3
 
@@ -278,10 +279,10 @@ const toString = function(number){
   // Final id string
   let id = ''
 
-  for(let placeValue = getMaxPlaceValue(number); placeValue >= 0; placeValue--){
-    charIndex = Math.floor(dpl / (Math.pow(dpl, placeValue + 1) / carryover) )
+  for(let power = getMaxPower(number); power >= 0; power--){
+    charIndex = Math.floor(dpl / (Math.pow(dpl, power + 1) / carryover) )
     id+= depotIndex(charIndex)
-    sumCharsTotal+= charIndex * Math.pow(dpl, placeValue)
+    sumCharsTotal+= charIndex * Math.pow(dpl, power)
     carryover = number - sumCharsTotal
   }
 
@@ -291,12 +292,13 @@ const toString = function(number){
 
 
 /**
- * Returns maximal possible power for given number.
+ * Returns max possible power for given number.
  *
  * @param {number} number
  * @return {number} power
+ * @private
  */
-function getMaxPlaceValue(number){
+function getMaxPower(number){
   let power = 0
   while(number >= Math.pow(depotLength(), power)){
     power++
