@@ -4,7 +4,7 @@
 const uniqueIds = require('../index')
 
 test('Should create a new id aaa', () => {
-  expect(uniqueIds.make()).toEqual('aab')
+  expect(uniqueIds.make()).toEqual('aaa')
 })
 
 test('Should accept "hjmM" as valid id', () => {
@@ -28,11 +28,15 @@ test('Should not accept "gg" as valid id', () => {
 
 test('Should reset', () => {
   uniqueIds.reset()
-  expect(uniqueIds.getLast()).toEqual('aaa')
+  expect(uniqueIds.lastId()).toEqual(false)
 })
 
 test('toNumber("abc") should be equal to number 54', () => {
   expect(uniqueIds.toNumber('abc')).toEqual(54)
+})
+
+test('toString(0) should be equal to id "aaa"', () => {
+  expect(uniqueIds.toString(0)).toEqual('aaa')
 })
 
 test('toString(2762434382739812) should be equal to id "aZJapccEtO"', () => {
@@ -41,22 +45,45 @@ test('toString(2762434382739812) should be equal to id "aZJapccEtO"', () => {
 
 test('Create 5000 ids in a for loop - toNumber(id) should equal i', () => {
   let id
-  for(let i=1; i < 5000; i++){
+  uniqueIds.reset()
+  for(let i=0; i < 5000; i++){
     id = uniqueIds.make()
     expect(uniqueIds.toNumber(id)).toEqual(i)
   }
 })
 
-test('Resetting after setting inital should equal to inital value', () => {
+test('setInitial("aZZ"): Resetting after setting inital id string should equal inital value', () => {
   uniqueIds.setInitial('aZZ')
-  uniqueIds.reset()
-  expect(uniqueIds.getLast()).toEqual('aZZ')
+  // Last id is false - none was set yet.
+  expect(uniqueIds.lastId()).toEqual(false) // aZY
+  // First id is as set 'aZZ'
+  expect(uniqueIds.make()).toEqual('aZZ')
+  // Next id is 'baa'
+  expect(uniqueIds.make()).toEqual('baa')
 })
 
-test('Resetting depot with valid characters should work', () => {
+test('setInitial(1): Resetting after setting inital numeric value should equal inital value', () => {
+  uniqueIds.setInitial(0)
+  // Last id is false - none was set yet.
+  expect(uniqueIds.lastId()).toEqual(false)
+  // First id is as set 'aaa'
+  expect(uniqueIds.make()).toEqual('aaa')
+  // Next id is 'aab'
+  expect(uniqueIds.make()).toEqual('aab')
+})
+
+test('exists(): Id "aaY" should exist after setting initial id to "aaZ" ', () => {
+  uniqueIds.setInitial('aaZ')
+  // 'aaY' exists, because it's smaller than 'aaZ'.
+  // Admittedly, that's poor. but Currently, an algo for recording
+  // taken id's is missing so long.
+  expect(uniqueIds.exists('aaY')).toEqual(true)
+})
+
+test('Resetting depot with valid special characters ",.-#+?=)(/&%$§!" should work', () => {
   uniqueIds.setDepot(',.-#+?=)(/&%$§!')
-  // Next id should be ,,.
-  expect(uniqueIds.make()).toEqual(',,.')
+  // Next id should be ,,,
+  expect(uniqueIds.make()).toEqual(',,,')
   // Id ',.#' should now be valid
   expect(uniqueIds.valid(",.#")).toEqual(true)
 })

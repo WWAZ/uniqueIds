@@ -37,7 +37,7 @@
 
 
 /**
- * Minimal length of character depot
+ * Minimal length of character depot.
  *
  * @var {number}
  */
@@ -58,7 +58,7 @@ let _errorHandler = (msg) => {
 
 
 /**
- * Resets error handler method
+ * Resets error handler method.
  *
  * @param {function} method
  */
@@ -71,12 +71,21 @@ const setErrorHandler = function(method){
 
 /**
 * Initial first id
-* Needs to have min length of minDepotLength (default = 3).
+* as numeric value. Where -1 = 0.
 *
-* @var {string}
+* @var {number}
 * @private
 */
-let inital = 'aaa'
+let initalNumber = -1
+
+
+/**
+* Number of last created id.
+*
+* @var {number}
+* @private
+*/
+let lastNumber = initalNumber
 
 
 /**
@@ -91,15 +100,32 @@ let depotChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 /**
  * Sets initial first id.
  *
- * @param {string} val - initial id value
+ * @param {mixed} val - id string or number
  * @return nothing
+ * @private
 */
 const setInitial = function(val){
-  if( val.length < minDepotLength ){
-    return _errorHandler('Initial value needs to have a length of at least 3 characters.')
+  if( typeof val === 'string' ){
+    if( valid(val) ){
+      setInitialNumber( toNumber(val) )
+    }
   }
-  inital = val
-  last = val
+  if( typeof val === 'number' ){
+    setInitialNumber( val )
+  }
+}
+
+
+/**
+ * Sets initial first id by number.
+ *
+ * @param {number} val - initial id value
+ * @return nothing
+ * @private
+*/
+function setInitialNumber(val){
+  initalNumber = val - 1
+  lastNumber = initalNumber
 }
 
 
@@ -136,6 +162,8 @@ const setDepot = function(val){
   let first = depotFirst()
   setInitial(first + first + first)
 
+  // setInitialNumber(0)
+
 }
 
 
@@ -160,97 +188,17 @@ function countMultipleCharacters(str){
 
 
 /**
- * Stores last provided id.
- * Default is initial.
- *
- * @var {string}
- * @private
-*/
-let last = inital
-
-
-/**
- * Sets last id.
- *
- * @param {string} id
- * @return nothing
- * @throws {Error} when no id is provided or id is unvalid
- * @private
- */
-function setLast(id){
-  if( typeof id !== 'undefined' ){
-    if( validate(id) ){
-      last = id
-      return true
-    }
-  }
-  return _errorHandler('Id "' + id + '" is unvalid.')
-}
-
-
-/**
  * Returns new unique id.
  *
  * @param none
  * @return {string} unique id
  *
  * @example
- * const uniqueId = require('uniqueId')
  * let id = uniqueId.make() // --> 'aaa'
 */
 const make = function(){
-
-  // Split last id into single chars
-  let l = last.split('')
-  // n = index of last string
-  let n = l.length - 1
-
-  let updated = 0;
-  let next
-
-  // Start with last char.
-  // If there's a next character
-  // in char depot, last letter
-  // will be replaced.
-  // 'abc' -> 'abd'
-  // When there's no next char,
-  // the leftern char will be updated
-  // and so on.
-  // 'abz' -> 'aca'
-  while (!updated && n > -1) {
-    // Set next char
-    next = getNext(l[n], n)
-    if( next ){
-      // We've found next.
-      // Update id.
-      l[n] = next
-      updated = 1
-      // Set all following to first char.
-      // e.g. 'abz' -> 'aca'
-      // e.g. 'azz' -> 'baa'
-      let nn = n + 1;
-      if( typeof l[nn] !== 'undefined' ){
-        for(let i=nn; i < l.length; i++){
-          l[i] = depotFirst()
-        }
-      }
-    }
-    n--
-  }
-
-  if( !updated ){
-    // No character was updated, no new id was found
-    // extend id length by 1, add first character.
-    // e.g. ZZZ -> baaa
-    l = addPlaceValue(l)
-  }
-
-  // Convert char arr back to string.
-  last = l.join('')
-
-  // Return new id
-  return last
-
+  lastNumber++
+  return toString(lastNumber)
 }
 
 
@@ -275,17 +223,11 @@ function addPlaceValue(arr){
 
 /**
  * Sets last id to it's inital value (default = 'aaa')
- * or to a given string.
  *
- * @param {string} id (optional)
  * @return nothing
 */
-const reset = function(id){
-  if( typeof id !== 'undefined' ){
-    return setLast(id)
-  }
-  last = inital
-  return true
+const reset = function(){
+  lastNumber = initalNumber
 }
 
 
@@ -320,8 +262,11 @@ function getNext(char, n){
  * @param none
  * @return {string} id
  */
-const getLast = function(){
-  return last
+const lastId = function(){
+  if( lastNumber === initalNumber ){
+    return false
+  }
+  return lastNumber >= 0 ? toString( lastNumber ) : false
 }
 
 
@@ -332,7 +277,7 @@ const getLast = function(){
  * @return {boolean}
  */
 const exists = function(id){
-  if( toNumber(id) <= toNumber(last) ){
+  if( toNumber(id) <= lastNumber ){
     return true
   }
   return false
@@ -356,6 +301,7 @@ const toNumber = function(id){
   }
   return Math.round(number)
 }
+
 
 /**
  * Returns id by given number.
@@ -397,7 +343,7 @@ const toString = function(number){
 
 
 /**
- * Returns maximal possible power for given number
+ * Returns maximal possible power for given number.
  *
  * @param {number} number
  * @return {number} power
@@ -407,7 +353,7 @@ function getMaxPlaceValue(number){
   while(number > Math.pow(depotLength(), power)){
     power++
   }
-  return power
+  return power >= minDepotLength - 1 ? power : minDepotLength - 1
 }
 
 
@@ -566,7 +512,7 @@ module.exports = {
   setDepot,
   make,
   reset,
-  getLast,
+  lastId,
   exists,
   toNumber,
   toString,
