@@ -263,7 +263,7 @@ const make = function(){
  * @private
  */
 function addPlaceValue(arr){
-  for(let i=0; i<arr.length; i++){
+  for(let i in arr){
     // set all digits to first char of depot (regulary 'a')
     arr[i] = depotFirst()
   }
@@ -350,7 +350,7 @@ const toNumber = function(id){
   let dl = depotLength()
   let placeValue = id.length - 1
   let number = 0
-  for(let i=0; i<id.length; i++){
+  for(let i in id){
     number+= depotCharIndex(id[i]) * Math.pow(dl, placeValue)
     placeValue--
   }
@@ -441,7 +441,7 @@ function validate(id){
     return false
   }
   let dp = depot()
-  for(let i=0; i<id.length; i++){
+  for(let i in id){
     if( dp.indexOf(id[i]) === -1 ){
       return false
     }

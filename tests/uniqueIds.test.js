@@ -31,8 +31,16 @@ test('Should reset', () => {
   expect(uniqueIds.getLast()).toEqual('aaa')
 })
 
-test('id("abc") should be equal to 54 ', () => {
+test('id("abc") should be equal to 54', () => {
   expect(uniqueIds.toNumber('abc')).toEqual(54)
+})
+
+test('Create 5000 ids in a for loop - toNumber(id) should equal i', () => {
+  let id
+  for(let i=1; i < 5000; i++){
+    id = uniqueIds.make()
+    expect(uniqueIds.toNumber(id)).toEqual(i)
+  }
 })
 
 test('Resetting after setting inital should equal to inital value', () => {
@@ -43,8 +51,10 @@ test('Resetting after setting inital should equal to inital value', () => {
 
 test('Resetting depot with valid characters should work', () => {
   uniqueIds.setDepot(',.-#+?=)(/&%$§!')
-  // Next id would be ,,.
+  // Next id should be ,,.
   expect(uniqueIds.make()).toEqual(',,.')
+  // Id ',.#' should now be valid
+  expect(uniqueIds.valid(",.#")).toEqual(true)
 })
 
 test('Resetting depot with too less characters should throw error', () => {
