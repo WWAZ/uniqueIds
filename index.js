@@ -12,5 +12,4 @@ if( typeof window !== 'undefined' ){
   window['UniqueIds'] = uniqueIds
 }
 
-
 module.exports = uniqueIds
