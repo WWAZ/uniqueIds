@@ -239,11 +239,11 @@ const toNumber = function(id){
   }
   id = id.split('')
   let dl = depotLength()
-  let placeValue = id.length - 1
+  let power = id.length - 1
   let number = 0
   for(let i in id){
-    number+= depotCharIndex(id[i]) * Math.pow(dl, placeValue)
-    placeValue--
+    number+= depotCharIndex(id[i]) * Math.pow(dl, power)
+    power--
   }
   return Math.round(number)
 }
