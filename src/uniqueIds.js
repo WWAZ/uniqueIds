@@ -357,6 +357,59 @@ const toNumber = function(id){
   return Math.round(number)
 }
 
+/**
+ * Returns id by given number.
+ *
+ * @param {number} number
+ * @return {string} id
+ */
+const toString = function(number){
+
+  let dpl = depotLength()
+
+  // Carryover to next loop
+  let carryover = number
+
+  // Index of character
+  let charIndex
+
+  // Total sum of set characters per loop
+  let sumCharsTotal = 0
+
+  // Final id string
+  let id = ''
+
+  for(let placeValue = getMaxPlaceValue(number); placeValue >= 0; placeValue--){
+
+    charIndex = Math.floor(dpl / (Math.pow(dpl, placeValue + 1) / carryover) )
+
+    id+= depotIndex(charIndex)
+
+    sumCharsTotal+= charIndex * Math.pow(dpl, placeValue)
+
+    carryover = number - sumCharsTotal
+
+  }
+
+  return id
+
+}
+
+
+/**
+ * Returns maximal possible power for given number
+ *
+ * @param {number} number
+ * @return {number} power
+ */
+function getMaxPlaceValue(number){
+  let power = 0
+  while(number > Math.pow(depotLength(), power)){
+    power++
+  }
+  return power
+}
+
 /*
 @todo
 exports.toString = function(number){
@@ -510,8 +563,13 @@ function depotSplit(){
  * @return {number} index
  * @private
  */
-function depotCharIndex(char){
+const depotCharIndex = function(char){
   return depotSplit().indexOf(char)
+}
+
+
+const depotIndex = function(index){
+  return depotSplit()[index]
 }
 
 
@@ -570,7 +628,10 @@ module.exports = {
   getLast,
   exists,
   toNumber,
+  toString,
   valid,
   depot,
-  setErrorHandler
+  setErrorHandler,
+  depotCharIndex,
+  depotIndex
 }

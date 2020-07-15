@@ -31,8 +31,12 @@ test('Should reset', () => {
   expect(uniqueIds.getLast()).toEqual('aaa')
 })
 
-test('id("abc") should be equal to 54', () => {
+test('toNumber("abc") should be equal to number 54', () => {
   expect(uniqueIds.toNumber('abc')).toEqual(54)
+})
+
+test('toString(2762434382739812) should be equal to id "aZJapccEtO"', () => {
+  expect(uniqueIds.toString(2762434382739812)).toEqual('aZJapccEtO')
 })
 
 test('Create 5000 ids in a for loop - toNumber(id) should equal i', () => {
