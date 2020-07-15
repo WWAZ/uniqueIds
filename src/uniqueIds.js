@@ -410,65 +410,6 @@ function getMaxPlaceValue(number){
   return power
 }
 
-/*
-@todo
-exports.toString = function(number){
-  number = number.split('')
-  let id = ''
-  let carry = 0
-  let dl = depotLength()
-  let placeValue = 0
-  let char
-  for(let i=number.length-1; i === 0; i--){
-
-    //number+= depotCharIndex(id[i]) * Math.pow(dl, placeValue)
-    {char, carry} = charAtnTimesDepotLength(placeValue, number[i], carry)
-    id+= char
-    placeValue++
-  }
-  return Math.round(number)
-}
-
-function fillZero(value, n){
-  value = String(value)
-  for(let i=0; i<n; i++){
-    value+='0'
-  }
-  return parseInt(value)
-}
-
-function charAtnTimesDepotLength(placeValue, number, carry){
-  let baseNumber = number
-  number = (number + carry) * fillZero(1, placeValue)
-  let maxDepotLength = Math.pow(depotLength(), placeValue)
-
-  // Drei Möglichkeiten
-  // a) number < lepotLength
-  // b) number < maxDepotLength
-  // c) number > maxDepotLength
-  if( number <=  depotLength() ){
-    // number < lepotLength
-    return depotCharIndex(number)
-  }
-  if( number <=  maxDepotLength ){
-    // number < maxDepotLength
-    return depotCharIndex(baseNumber)
-    // 2000 / 10 = 200 Durchläufe beginnend ab 2 -> b
-    // 2245 / 10 = 224.5 Durchläufe beginnend ab 2 -> b
-  }
-  // number > maxDepotLength
-
-  let pos = number *
-  if( pos <= depotLength() ){
-    return {
-      char: depotCharIndex(pos),
-      carry: 0
-    }
-  }
-
-}
-*/
-
 
 /**
  * Returns true when given id is valid.
