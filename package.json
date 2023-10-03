@@ -21,9 +21,9 @@
     "core-js": "^3.6.5",
     "eslint": "^7.4.0",
     "jest": "^26.1.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "^3.0.1",
     "utf-8-validate": "^5.0.2",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   }
 }
